@@ -13,7 +13,7 @@
 
 * 下载并安装jetty：J2EE的运行时框架服务器，还不是太明白做什么用。。
 
-  jetty的安装和Ant类似，发现石油Homebrew更方便；
+  jetty的安装和Ant类似，发现使用Homebrew更方便；
 
   参考：http://macappstore.org/jetty/
 
