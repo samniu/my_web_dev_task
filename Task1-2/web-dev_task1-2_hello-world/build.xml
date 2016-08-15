@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<!-- TODO 修改name -->
+<project name="hello-world" default="main">
+	
+	<!-- main函数对应的类名 -->
+	<!-- TODO 修改value -->
+	<property name="main-class" value="org.eclipse.jetty.start.Main" />
+	<property name="server-port" value="8080" />
+	<property name="stop-port" value="8081" />
+	<property name="stop-key" value="${ant.project.name}" />
+	<property name="context-path" value="/" />
+	
+	<!-- TODO 修改value -->
+	<property name="project.version" value="1.0.0" />
+	
+	<!-- 运行时shell名称 -->
+	<!-- TODO 修改value -->
+	<property name="shell.name" value="run" />
+	<property name="shell.jetty.start.name" value="jetty/start.ini" />
+	<property name="shell.jetty.stop.name" value="stop" />
+	
+	<!-- TODO 修改value -->
+	<property name="shell.template.path" value="${basedir}/shell/run.tpl" />
+	<property name="shell.jetty.start.template.path" value="${basedir}/shell/start.ini.tpl" />
+	<property name="shell.jetty.stop.template.path" value="${basedir}/shell/stop.tpl" />
+	
+	<property name="shell.builder" value="com.zgwangbo.antbuild.ShellBuilder" />
+
+	<property name="classes.dir" value="${basedir}/web/WEB-INF/classes" />
+	<property name="web.lib.dir" value="${basedir}/web/WEB-INF/lib" />
+	<property name="jar.dir" value="${basedir}/jar" />
+	<property name="jar.path" value="${jar.dir}/${ant.project.name}-${project.version}.jar" />
+	<property name="shell.dir" value="${basedir}" />
+	<property name="shell.path" value="${shell.dir}/${shell.name}" />
+	<property name="shell.jetty.start.path" value="${shell.dir}/${shell.jetty.start.name}" />
+	<property name="shell.jetty.stop.path" value="${shell.dir}/${shell.jetty.stop.name}" />
+	
+	<path id="classpath">
+		<fileset dir="${web.lib.dir}" includes="**/*.jar" />
+	</path>
+	
+	<!-- 主target -->
+	<target name="main" depends="clean,compile,shell" description="Main target">
+		<echo>build done!</echo>
+	</target>
+
+	<!-- 清理环境 -->
+	<target name="clean">
+		<echo>clean</echo>
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${classes.dir}" />
+			<fileset dir="${jar.dir}" />
+			<fileset file="${shell.path}" />
+		</delete>
+	</target>
+
+	<!-- 初始化环境 -->
+	<target name="init" depends="clean">
+	</target>
+
+	<!-- 编译 -->
+	<target name="compile">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${jar.dir}" />
+	</target>
+
+	<!-- 打jar包 -->
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.path}" basedir="${classes.dir}">
+		</jar>
+	</target>
+	
+	<!-- 生成shell文件 -->
+	<target name="shell" depends="compile">
+		<java fork="true" classname="${shell.builder}">
+			<classpath>
+				<path refid="classpath" />
+				<path location="${jar.path}" />
+			</classpath>
+			<arg value="shell.path=${shell.path}"/>
+			<arg value="shell.template.path=${shell.template.path}" />
+			<arg value="java.path=${java.home}/bin/java"/>
+			<arg value="project.dir=${basedir}"/>
+			<arg value="main-class=${main-class}"/>
+			<arg value="jar.path=${jar.path}" />
+			<arg value="server.port=${server-port}" />
+			<arg value="stop.port=${stop-port}" />
+			<arg value="stop.key=${stop-key}" />
+			<arg value="context.path=${context-path}" />
+			<arg value="project.version=${project.version}" />
+			<arg value="project.name=${ant.project.name}" />
+		</java>
+		<chmod file="${shell.path}" perm="ug+rx"/>
+		
+		<java fork="true" classname="${shell.builder}">
+			<classpath>
+				<path refid="classpath" />
+				<path location="${jar.path}" />
+			</classpath>
+			<arg value="shell.path=${shell.jetty.start.path}"/>
+			<arg value="shell.template.path=${shell.jetty.start.template.path}" />
+			<arg value="java.path=${java.home}/bin/java"/>
+			<arg value="project.dir=${basedir}"/>
+			<arg value="main-class=${main-class}"/>
+			<arg value="jar.path=${jar.path}" />
+			<arg value="server.port=${server-port}" />
+			<arg value="stop.port=${stop-port}" />
+			<arg value="stop.key=${stop-key}" />
+			<arg value="context.path=${context-path}" />
+			<arg value="project.version=${project.version}" />
+		</java>
+		
+		<java fork="true" classname="${shell.builder}">
+			<classpath>
+				<path refid="classpath" />
+				<path location="${jar.path}" />
+			</classpath>
+			<arg value="shell.path=${shell.jetty.stop.path}"/>
+			<arg value="shell.template.path=${shell.jetty.stop.template.path}" />
+			<arg value="java.path=${java.home}/bin/java"/>
+			<arg value="project.dir=${basedir}"/>
+			<arg value="main-class=${main-class}"/>
+			<arg value="jar.path=${jar.path}" />
+			<arg value="server.port=${server-port}" />
+			<arg value="stop.port=${stop-port}" />
+			<arg value="stop.key=${stop-key}" />
+			<arg value="context.path=${context-path}" />
+			<arg value="project.version=${project.version}" />
+		</java>
+		<chmod file="${shell.jetty.stop.path}" perm="ug+rx"/>
+		
+		<java fork="true" classname="${shell.builder}">
+			<classpath>
+				<path refid="classpath" />
+				<path location="${jar.path}" />
+			</classpath>
+			<arg value="shell.path=${basedir}${file.separator}run.bat"/>
+			<arg value="shell.template.path=${basedir}${file.separator}shell${file.separator}run.bat.tpl" />
+			<arg value="java.path=${java.home}${file.separator}bin${file.separator}java"/>
+			<arg value="project.dir=${basedir}"/>
+			<arg value="main-class=${main-class}"/>
+			<arg value="jar.path=${jar.path}" />
+			<arg value="server.port=${server-port}" />
+			<arg value="stop.port=${stop-port}" />
+			<arg value="stop.key=${stop-key}" />
+			<arg value="context.path=${context-path}" />
+			<arg value="project.version=${project.version}" />
+			<arg value="project.name=${ant.project.name}" />
+		</java>
+	</target>
+
+</project>
