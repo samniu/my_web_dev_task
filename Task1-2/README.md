@@ -12,7 +12,26 @@
 * 修改web/hello-world.jsp文件, 看看效果
 
 * 再次浏览器访问：http://localhost:8080/show_parameter.jsp?a=1&b=2
-* 
+* 尝试将参数转换为整数，计算结果后再转为String,最后打印出来。
+
+在jsp标签<%和 %>中计算结果：
+
+```
+String a = request.getParameter("a");
+String b = request.getParameter("b");
+
+int m = Integer.valueOf(a);
+int n = Integer.valueOf(b);
+
+int sum = m + n;
+String result = Integer.toString(sum);
+```
+
+输出结果：
+
+```
+a+b=<%out.println(result);%>
+```
 
 
 
