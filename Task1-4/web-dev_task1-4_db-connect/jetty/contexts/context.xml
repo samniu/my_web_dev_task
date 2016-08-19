@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<Set name="resourceBase">./web</Set>
+	<Set name="contextPath"><SystemProperty name="context.path" default="."/></Set>
+	<!--设置Web应用的默认配置描述符-->
+	<Set name="defaultsDescriptor">
+		<SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml
+	</Set>
+	
+	<Get name="sessionHandler">
+		<Set name="sessionManager">
+			<New class="org.eclipse.jetty.server.session.HashSessionManager">
+				<Set name="sessionCookie">bcz_sid</Set>
+				<Set name="sessionIdPathParameterName">bcz_sid</Set>
+			</New>
+		</Set>
+	</Get>
+ 
+	<!-- 设置 5xx 错误页 --><!-- 
+	<Get name="errorHandler">
+		<Call name="addErrorPage">
+			<Arg type="int">500</Arg>
+			<Arg type="int">599</Arg>
+			<Arg type="String">/jsp/system/error.jsp</Arg>
+		</Call>
+	</Get>
+ -->
+	<!-- 设置 4xx 错误页 --><!-- 
+	<Get name="errorHandler">
+		<Call name="addErrorPage">
+			<Arg type="int">400</Arg>
+			<Arg type="int">499</Arg>
+			<Arg type="String">/jsp/system/400.jsp</Arg>
+		</Call>
+	</Get>
+	 -->
+	<!-- 设置 不打印堆栈信息 -->
+	<Get name="errorHandler">
+		<Call name="setShowStacks">
+			<Arg type="boolean">false</Arg>
+		</Call>
+	</Get>
+	  
+</Configure>
